@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+modified_files=$(find . \( -name "*.tf" -o -name "*.tfvars" \) -print0  | xargs -0 -n 1 terraform fmt)
+
+for f in ${modified_files}
+do
+  git add "$f"
+done

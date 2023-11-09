@@ -25,6 +25,14 @@ resource "aws_cloudfront_distribution" "repo" {
       "GET", "HEAD"
     ]
     cache_policy_id = aws_cloudfront_cache_policy.default.id
+
+    dynamic "function_association" {
+      for_each = var.http_auth_user != null ? [{}] : []
+      content {
+        event_type   = "viewer-request"
+        function_arn = aws_cloudfront_function.http_auth.arn
+      }
+    }
   }
 
   viewer_certificate {
@@ -47,6 +55,9 @@ resource "aws_cloudfront_distribution" "repo" {
     bucket = aws_s3_bucket.repo-logs.bucket_domain_name
   }
 
+  depends_on = [
+    aws_acm_certificate_validation.repo
+  ]
 }
 
 resource "aws_cloudfront_cache_policy" "default" {
@@ -67,4 +78,19 @@ resource "aws_cloudfront_cache_policy" "default" {
     }
   }
 
+}
+
+
+resource "aws_cloudfront_function" "http_auth" {
+  name    = replace("${var.domain_name}-auth", ".", "_")
+  runtime = "cloudfront-js-1.0"
+  comment = "Enable HTTP basic authentication"
+  publish = true
+
+  code = templatefile(
+    "${path.module}/handler-http-auth.js.tftpl",
+    {
+      auth_str = base64encode("${var.http_auth_user != null ? var.http_auth_user : ""}:${var.http_auth_password != null ? var.http_auth_password : ""}")
+    }
+  )
 }
