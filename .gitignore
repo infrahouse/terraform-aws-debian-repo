@@ -1,6 +1,10 @@
 ### Terraform template
 # Local .terraform directories
 **/.terraform/*
+.terraform.lock.hcl
+
+tf-apply-trace.txt
+tf-destroy-trace.txt
 
 # .tfstate files
 *.tfstate
@@ -35,3 +39,5 @@ override.tf.json
 terraform.rc
 
 /.idea/
+
+__pycache__

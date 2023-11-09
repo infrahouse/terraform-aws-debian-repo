@@ -22,6 +22,18 @@ variable "gpg_sign_with" {
   description = "Email of a packager user."
 }
 
+variable "http_auth_user" {
+  description = "Username for HTTP basic authentication. If not specified, the authentication isn't enabled."
+  type        = string
+  default     = null
+}
+
+variable "http_auth_password" {
+  description = "Password for HTTP basic authentication."
+  type        = string
+  default     = null
+}
+
 variable "index_title" {
   description = "Content of a title tag in index.html."
   type        = string

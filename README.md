@@ -145,21 +145,38 @@ Checking jammy...
 0
 ```
 If the output looks similar and an exit code is zero - all looks good!
+
+## Authentication
+
+The module supports HTTP basic authentication. By default, it's disabled. To enable it, 
+add `http_auth_user` and `http_auth_password` variables.
+```hcl
+module "release_infrahouse_com" {
+  providers = {
+    aws     = aws
+    aws.ue1 = aws.aws-us-east-1
+  }
+...
+
+  http_auth_user      = var.http_user
+  http_auth_password  = var.http_password
+}
+```
 ## Requirements
 
-| Name | Version  |
-|------|----------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.5   |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | \>= 4.67 |
-| <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.5   |
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | ~> 1.5 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.67 |
+| <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.5 |
 
 ## Providers
 
-| Name | Version  |
-|------|----------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | \>= 4.67 |
-| <a name="provider_aws.ue1"></a> [aws.ue1](#provider\_aws.ue1) | >= 4.67  |
-| <a name="provider_random"></a> [random](#provider\_random) | ~> 3.5   |
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 4.67 |
+| <a name="provider_aws.ue1"></a> [aws.ue1](#provider\_aws.ue1) | >= 4.67 |
+| <a name="provider_random"></a> [random](#provider\_random) | ~> 3.5 |
 
 ## Modules
 
@@ -173,6 +190,7 @@ No modules.
 | [aws_acm_certificate_validation.repo](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/acm_certificate_validation) | resource |
 | [aws_cloudfront_cache_policy.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_cache_policy) | resource |
 | [aws_cloudfront_distribution.repo](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution) | resource |
+| [aws_cloudfront_function.http_auth](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_function) | resource |
 | [aws_route53_record.cert_validation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_record.repo](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_s3_bucket.repo](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket) | resource |
@@ -202,6 +220,8 @@ No modules.
 | <a name="input_domain_name"></a> [domain\_name](#input\_domain\_name) | Domain name where the repository will be available. | `string` | n/a | yes |
 | <a name="input_gpg_public_key"></a> [gpg\_public\_key](#input\_gpg\_public\_key) | Content of the GPG public key used for signing the repository. Note, you'll have to upload the key manually or with 'ih-s3-reprepro ... set-secret-value packager-key-focal ~/packager-key-focal' | `any` | n/a | yes |
 | <a name="input_gpg_sign_with"></a> [gpg\_sign\_with](#input\_gpg\_sign\_with) | Email of a packager user. | `any` | n/a | yes |
+| <a name="input_http_auth_password"></a> [http\_auth\_password](#input\_http\_auth\_password) | Password for HTTP basic authentication. | `string` | `null` | no |
+| <a name="input_http_auth_user"></a> [http\_auth\_user](#input\_http\_auth\_user) | Username for HTTP basic authentication. If not specified, the authentication isn't enabled. | `string` | `null` | no |
 | <a name="input_index_body"></a> [index\_body](#input\_index\_body) | Content of a body tag in index.html. | `string` | `"Stay tuned!"` | no |
 | <a name="input_index_title"></a> [index\_title](#input\_index\_title) | Content of a title tag in index.html. | `string` | `"Debian packages repository"` | no |
 | <a name="input_repository_codename"></a> [repository\_codename](#input\_repository\_codename) | Repository codename. Can be focal, jammy, etc. | `string` | n/a | yes |
