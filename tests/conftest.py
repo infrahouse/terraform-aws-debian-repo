@@ -8,7 +8,7 @@ from infrahouse_toolkit.logging import setup_logging
 TEST_ACCOUNT = "303467602807"
 TEST_ROLE_ARN = "arn:aws:iam::303467602807:role/debian-repo-tester"
 DEFAULT_PROGRESS_INTERVAL = 10
-TRACE_TERRAFORM = True
+TRACE_TERRAFORM = False
 DESTROY_AFTER = True
 UBUNTU_CODENAME = "jammy"
 
