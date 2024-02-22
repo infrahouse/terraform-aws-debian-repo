@@ -40,8 +40,8 @@ data "aws_iam_policy_document" "bucket-access" {
       "arn:aws:s3:::${var.bucket_name}/*"
     ]
     condition {
-      test     = "StringEquals"
-      values   = [
+      test = "StringEquals"
+      values = [
         aws_cloudfront_distribution.repo.arn
       ]
       variable = "AWS:SourceArn"
