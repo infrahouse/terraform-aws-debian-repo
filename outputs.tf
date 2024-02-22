@@ -1,3 +1,8 @@
+output "repo_url" {
+  description = "Repository URL."
+  value       = "https://${var.domain_name}"
+}
+
 output "release_bucket" {
   description = "Bucket name that hosts repository files."
   value       = aws_s3_bucket.repo.bucket

@@ -17,8 +17,6 @@ from tests.conftest import (
 from os import path as osp
 
 
-@pytest.mark.flaky(reruns=0, reruns_delay=30)
-@pytest.mark.timeout(1800)
 @pytest.mark.parametrize(
     "http_user, http_password",
     [

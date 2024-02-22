@@ -5,7 +5,7 @@ resource "aws_s3_bucket" "repo" {
 
 resource "aws_s3_bucket_acl" "repo" {
   bucket = aws_s3_bucket.repo.bucket
-  acl    = "public-read"
+  acl    = "private"
   depends_on = [
     aws_s3_bucket_public_access_block.repo,
     aws_s3_bucket_ownership_controls.repo
@@ -14,10 +14,10 @@ resource "aws_s3_bucket_acl" "repo" {
 
 resource "aws_s3_bucket_public_access_block" "repo" {
   bucket                  = aws_s3_bucket.repo.bucket
-  block_public_acls       = false
-  block_public_policy     = false
-  ignore_public_acls      = false
-  restrict_public_buckets = false
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
 
 resource "aws_s3_bucket_ownership_controls" "repo" {
@@ -26,35 +26,37 @@ resource "aws_s3_bucket_ownership_controls" "repo" {
     object_ownership = "BucketOwnerPreferred"
   }
 }
-resource "aws_s3_bucket_website_configuration" "repo" {
-  bucket = aws_s3_bucket.repo.bucket
-  index_document {
-    suffix = "index.html"
-  }
-}
 
-data "aws_iam_policy_document" "public-access" {
+data "aws_iam_policy_document" "bucket-access" {
   statement {
     principals {
-      type        = "AWS"
-      identifiers = ["*"]
+      identifiers = ["cloudfront.amazonaws.com"]
+      type        = "Service"
     }
-    actions = ["s3:GetObject"]
-    resources = [
-      "${aws_s3_bucket.repo.arn}/*"
+    actions = [
+      "s3:GetObject"
     ]
+    resources = [
+      "arn:aws:s3:::${var.bucket_name}/*"
+    ]
+    condition {
+      test     = "StringEquals"
+      values   = [
+        aws_cloudfront_distribution.repo.arn
+      ]
+      variable = "AWS:SourceArn"
+    }
   }
 }
 
-resource "aws_s3_bucket_policy" "public-access" {
+resource "aws_s3_bucket_policy" "bucket-access" {
   bucket = aws_s3_bucket.repo.bucket
-  policy = data.aws_iam_policy_document.public-access.json
+  policy = data.aws_iam_policy_document.bucket-access.json
   depends_on = [
     aws_s3_bucket_acl.repo,
     aws_s3_bucket_public_access_block.repo,
     aws_s3_bucket_public_access_block.repo,
     aws_s3_bucket_ownership_controls.repo,
-    aws_s3_bucket_website_configuration.repo,
   ]
 }
 
@@ -68,13 +70,11 @@ resource "aws_s3_object" "index-html" {
       body : var.index_body
     }
   )
-  acl          = "public-read"
   content_type = "text/html"
   depends_on = [
     aws_s3_bucket_acl.repo,
     aws_s3_bucket_public_access_block.repo,
     aws_s3_bucket_ownership_controls.repo,
-    aws_s3_bucket_website_configuration.repo
   ]
 }
 
@@ -82,13 +82,11 @@ resource "aws_s3_object" "deb-gpg-public-key" {
   bucket       = aws_s3_bucket.repo.bucket
   key          = "DEB-GPG-KEY-${var.domain_name}"
   content      = var.gpg_public_key
-  acl          = "public-read"
   content_type = "text/plain"
   depends_on = [
     aws_s3_bucket_acl.repo,
     aws_s3_bucket_public_access_block.repo,
     aws_s3_bucket_ownership_controls.repo,
-    aws_s3_bucket_website_configuration.repo
   ]
 }
 
@@ -110,4 +108,10 @@ resource "aws_s3_bucket_acl" "repo-logs" {
   ]
   bucket = aws_s3_bucket.repo-logs.bucket
   acl    = "private"
+}
+
+resource "aws_s3_bucket_logging" "server-logs" {
+  bucket        = aws_s3_bucket.repo.bucket
+  target_bucket = aws_s3_bucket.repo-logs.bucket
+  target_prefix = "server-side/"
 }
