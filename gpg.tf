@@ -6,6 +6,7 @@ resource "aws_secretsmanager_secret" "passphrase" {
   name                    = "packager-passphrase-${var.repository_codename}"
   description             = "Passphrase for a signing GPG key for ${var.repository_codename}"
   recovery_window_in_days = 0
+  tags                    = local.tags
 }
 
 resource "aws_secretsmanager_secret_version" "passphrase" {
@@ -17,4 +18,5 @@ resource "aws_secretsmanager_secret" "key" {
   name                    = "packager-key-${var.repository_codename}"
   description             = "Signing GPG key for ${var.repository_codename}"
   recovery_window_in_days = 0
+  tags                    = local.tags
 }

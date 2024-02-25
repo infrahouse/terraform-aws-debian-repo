@@ -15,4 +15,5 @@ module "test" {
   zone_id             = data.aws_route53_zone.cicd.zone_id
   http_auth_user      = var.http_user
   http_auth_password  = var.http_password
+  bucket_admin_roles  = [module.jumphost.jumphost_role_arn]
 }

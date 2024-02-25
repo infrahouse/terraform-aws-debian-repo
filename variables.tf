@@ -1,3 +1,9 @@
+variable "bucket_admin_roles" {
+  description = "List of AWS IAM role ARN that has permissions to upload to the bucket"
+  type        = list(string)
+  default     = []
+}
+
 variable "bucket_name" {
   description = "S3 bucket name for the repository."
   type        = string

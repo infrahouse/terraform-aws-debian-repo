@@ -2,6 +2,7 @@ resource "aws_acm_certificate" "repo" {
   provider          = aws.ue1
   domain_name       = var.domain_name
   validation_method = "DNS"
+  tags              = local.tags
 }
 
 resource "aws_route53_record" "cert_validation" {

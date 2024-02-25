@@ -5,7 +5,7 @@ resource "aws_cloudfront_distribution" "repo" {
   aliases             = [var.domain_name]
 
   origin {
-    domain_name              = aws_s3_bucket.repo.bucket_domain_name
+    domain_name              = aws_s3_bucket.repo.bucket_regional_domain_name
     origin_id                = local.origin_id
     origin_access_control_id = aws_cloudfront_origin_access_control.repo-storage.id
   }
@@ -31,8 +31,9 @@ resource "aws_cloudfront_distribution" "repo" {
   }
 
   viewer_certificate {
-    acm_certificate_arn = aws_acm_certificate.repo.arn
-    ssl_support_method  = "sni-only"
+    acm_certificate_arn      = aws_acm_certificate.repo.arn
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2021"
   }
 
   restrictions {
@@ -50,6 +51,7 @@ resource "aws_cloudfront_distribution" "repo" {
     bucket = aws_s3_bucket.repo-logs.bucket_domain_name
   }
 
+  tags = local.tags
   depends_on = [
     aws_acm_certificate_validation.repo
   ]
@@ -75,7 +77,7 @@ resource "aws_cloudfront_cache_policy" "default" {
 
 }
 
-
+# Credit: https://www.joshualyman.com/2022/01/add-http-basic-authentication-to-cloudfront-distributions/
 resource "aws_cloudfront_function" "http_auth" {
   name    = replace("${var.domain_name}-auth", ".", "_")
   runtime = "cloudfront-js-1.0"
