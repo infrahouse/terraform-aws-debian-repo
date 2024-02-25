@@ -1,6 +1,7 @@
 resource "aws_s3_bucket" "repo" {
   bucket        = var.bucket_name
   force_destroy = var.bucket_force_destroy
+  tags          = local.tags
 }
 
 resource "aws_s3_bucket_acl" "repo" {
@@ -26,8 +27,18 @@ resource "aws_s3_bucket_ownership_controls" "repo" {
     object_ownership = "BucketOwnerPreferred"
   }
 }
-
 data "aws_iam_policy_document" "bucket-access" {
+  source_policy_documents = concat(
+    [
+      data.aws_iam_policy_document.bucket-cloudfront-access.json
+    ],
+    [
+      for doc in data.aws_iam_policy_document.bucket-admin : doc.json
+    ]
+  )
+}
+
+data "aws_iam_policy_document" "bucket-cloudfront-access" {
   statement {
     principals {
       identifiers = ["cloudfront.amazonaws.com"]
@@ -48,6 +59,26 @@ data "aws_iam_policy_document" "bucket-access" {
     }
   }
 }
+
+data "aws_iam_policy_document" "bucket-admin" {
+  count = length(var.bucket_admin_roles)
+  statement {
+    principals {
+      identifiers = [
+        var.bucket_admin_roles[count.index],
+      ]
+      type = "AWS"
+    }
+    actions = [
+      "s3:*"
+    ]
+    resources = [
+      "arn:aws:s3:::${var.bucket_name}",
+      "arn:aws:s3:::${var.bucket_name}/*"
+    ]
+  }
+}
+
 
 resource "aws_s3_bucket_policy" "bucket-access" {
   bucket = aws_s3_bucket.repo.bucket
@@ -71,6 +102,7 @@ resource "aws_s3_object" "index-html" {
     }
   )
   content_type = "text/html"
+  tags         = local.tags
   depends_on = [
     aws_s3_bucket_acl.repo,
     aws_s3_bucket_public_access_block.repo,
@@ -83,6 +115,7 @@ resource "aws_s3_object" "deb-gpg-public-key" {
   key          = "DEB-GPG-KEY-${var.domain_name}"
   content      = var.gpg_public_key
   content_type = "text/plain"
+  tags         = local.tags
   depends_on = [
     aws_s3_bucket_acl.repo,
     aws_s3_bucket_public_access_block.repo,
@@ -91,7 +124,9 @@ resource "aws_s3_object" "deb-gpg-public-key" {
 }
 
 resource "aws_s3_bucket" "repo-logs" {
-  bucket        = "${var.bucket_name}-logs"
+  bucket = "${var.bucket_name}-logs"
+  tags   = local.tags
+
   force_destroy = var.bucket_force_destroy
 }
 

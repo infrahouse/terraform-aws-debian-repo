@@ -211,11 +211,14 @@ No modules.
 | [aws_secretsmanager_secret_version.passphrase](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret_version) | resource |
 | [random_password.passphrase](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
 | [aws_iam_policy_document.bucket-access](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.bucket-admin](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.bucket-cloudfront-access](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_bucket_admin_roles"></a> [bucket\_admin\_roles](#input\_bucket\_admin\_roles) | List of AWS IAM role ARN that has permissions to upload to the bucket | `list(string)` | `[]` | no |
 | <a name="input_bucket_force_destroy"></a> [bucket\_force\_destroy](#input\_bucket\_force\_destroy) | If true, the repository bucket will be destroyed even if it contains files. | `bool` | `false` | no |
 | <a name="input_bucket_name"></a> [bucket\_name](#input\_bucket\_name) | S3 bucket name for the repository. | `string` | n/a | yes |
 | <a name="input_domain_name"></a> [domain\_name](#input\_domain\_name) | Domain name where the repository will be available. | `string` | n/a | yes |

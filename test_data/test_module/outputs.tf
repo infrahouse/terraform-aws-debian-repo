@@ -31,3 +31,11 @@ output "packager_key_passphrase_secret_id" {
 output "repository_url" {
   value = module.test.repo_url
 }
+
+output "jumphost" {
+  value = module.jumphost.jumphost_hostname
+}
+
+output "jumphost_role" {
+  value = module.jumphost.jumphost_role_arn
+}
