@@ -15,20 +15,20 @@ output "release_bucket_arn" {
 
 output "packager_key_secret_arn" {
   description = "ARN of a secret that will store a GPG private key."
-  value       = aws_secretsmanager_secret.key.arn
+  value       = module.key.secret_arn
 }
 
 output "packager_key_secret_id" {
   description = "Identifier of a secret that will store a GPG private key."
-  value       = aws_secretsmanager_secret.key.id
+  value       = module.key.secret_id
 }
 
 output "packager_key_passphrase_secret_arn" {
   description = "ARN of a secret that will store a GPG private key passphrase."
-  value       = aws_secretsmanager_secret.passphrase.arn
+  value       = module.passphrase.secret_arn
 }
 
 output "packager_key_passphrase_secret_id" {
   description = "Identifier of a secret that will store a GPG private key passphrase."
-  value       = aws_secretsmanager_secret.passphrase.id
+  value       = module.passphrase.secret_id
 }

@@ -180,7 +180,10 @@ module "release_infrahouse_com" {
 
 ## Modules
 
-No modules.
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_key"></a> [key](#module\_key) | registry.infrahouse.com/infrahouse/secret/aws | 0.5.0 |
+| <a name="module_passphrase"></a> [passphrase](#module\_passphrase) | registry.infrahouse.com/infrahouse/secret/aws | 0.5.0 |
 
 ## Resources
 
@@ -206,9 +209,6 @@ No modules.
 | [aws_s3_object.deb-gpg-public-key](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_object) | resource |
 | [aws_s3_object.distributions](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_object) | resource |
 | [aws_s3_object.index-html](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_object) | resource |
-| [aws_secretsmanager_secret.key](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret) | resource |
-| [aws_secretsmanager_secret.passphrase](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret) | resource |
-| [aws_secretsmanager_secret_version.passphrase](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/secretsmanager_secret_version) | resource |
 | [random_password.passphrase](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
 | [aws_iam_policy_document.bucket-access](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.bucket-admin](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
@@ -229,6 +229,8 @@ No modules.
 | <a name="input_index_body"></a> [index\_body](#input\_index\_body) | Content of a body tag in index.html. | `string` | `"Stay tuned!"` | no |
 | <a name="input_index_title"></a> [index\_title](#input\_index\_title) | Content of a title tag in index.html. | `string` | `"Debian packages repository"` | no |
 | <a name="input_repository_codename"></a> [repository\_codename](#input\_repository\_codename) | Repository codename. Can be focal, jammy, etc. | `string` | n/a | yes |
+| <a name="input_signing_key_readers"></a> [signing\_key\_readers](#input\_signing\_key\_readers) | List of role ARNs that have permission to read GPG signing key and passphrase. | `list(string)` | `null` | no |
+| <a name="input_signing_key_writers"></a> [signing\_key\_writers](#input\_signing\_key\_writers) | List of role ARNs that have permission to write to GPG signing key and passphrase secrets. | `list(string)` | `null` | no |
 | <a name="input_zone_id"></a> [zone\_id](#input\_zone\_id) | Route53 zone id where the parent domain of var.domain\_name is hosted. If var.domain\_name is repo.foo.com, then the value should be zone\_id of foo.com. | `string` | n/a | yes |
 
 ## Outputs

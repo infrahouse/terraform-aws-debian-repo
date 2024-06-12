@@ -57,6 +57,18 @@ variable "repository_codename" {
   type        = string
 }
 
+variable "signing_key_readers" {
+  description = "List of role ARNs that have permission to read GPG signing key and passphrase."
+  type        = list(string)
+  default     = null
+}
+
+variable "signing_key_writers" {
+  description = "List of role ARNs that have permission to write to GPG signing key and passphrase secrets."
+  type        = list(string)
+  default     = null
+}
+
 variable "zone_id" {
   description = "Route53 zone id where the parent domain of var.domain_name is hosted. If var.domain_name is repo.foo.com, then the value should be zone_id of foo.com."
   type        = string
