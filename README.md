@@ -42,7 +42,7 @@ You selected this USER-ID:
 
 Change (N)ame, (C)omment, (E)mail or (O)kay/(Q)uit? O
 ```
-Save a passphrase if you provided one. Or don't provide it at all. We will chnage it later anyway.
+Save a passphrase if you provided one. Or don't provide it at all. We will change it later anyway.
 
 Export a public key, save it in a file.
 
@@ -75,7 +75,8 @@ module "release_infrahouse_com" {
     aws     = aws
     aws.ue1 = aws.aws-us-east-1
   }
-  source               = "infrahouse/terraform-aws-debian-repo"
+  source               = "registry.infrahouse.com/infrahouse/terraform-aws-debian-repo"
+  version              = "~> 2.2"
   bucket_name          = "infrahouse-release"
   repository_codename  = "jammy"
   domain_name          = "release.infrahouse.com"
@@ -100,15 +101,13 @@ module "release_infrahouse_com" {
 To make the step easier install [infrahouse-toolkit](https://pypi.org/project/infrahouse-toolkit/).
 
 ```shell
-# pip install infrahouse-toolkit~=1.7
+# pip install infrahouse-toolkit~=2.25
 ```
 
 Get the generated passphrase.
 
 ```shell
-# ih-s3-reprepro --aws-region us-west-1 \
-    --bucket infrahouse-release \
-    get-secret-value packager-passphrase-jammy
+# ih-secrets --aws-region us-west-1 get packager-passphrase-jammy
 ```
 
 Update the passphrase in the GPG private key.
@@ -131,9 +130,7 @@ Export the private GPG key to a file.
 Upload the private GPG key
 
 ```shell
-# ih-s3-reprepro --aws-region us-west-1 \
-    --bucket infrahouse-release \
-    secret-value packager-key-jammy gpg-private-key
+# ih-secrets --aws-region us-west-1 set packager-key-noble gpg-private-key
 ```
 ### Step 4. Check the repository
 
