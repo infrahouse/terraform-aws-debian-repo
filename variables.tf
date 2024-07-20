@@ -20,6 +20,14 @@ variable "domain_name" {
   type        = string
 }
 
+variable "architectures" {
+  description = "List of architectures served by the repo"
+  type        = list(string)
+  default = [
+    "amd64"
+  ]
+}
+
 variable "gpg_public_key" {
   description = "Content of the GPG public key used for signing the repository. Note, you'll have to upload the key manually or with 'ih-s3-reprepro ... set-secret-value packager-key-focal ~/packager-key-focal'"
 }

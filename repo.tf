@@ -6,6 +6,7 @@ resource "aws_s3_object" "distributions" {
     {
       codename : var.repository_codename
       signwith : var.gpg_sign_with
+      architectures : join(" ", var.architectures)
     }
   )
   content_type = "text/plain"
