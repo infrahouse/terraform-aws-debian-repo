@@ -77,6 +77,12 @@ variable "signing_key_writers" {
   default     = null
 }
 
+variable "package_version_limit" {
+  description = "Number of versions of a package to keep in the repository. Zero means keep all versions."
+  type        = number
+  default     = null
+}
+
 variable "zone_id" {
   description = "Route53 zone id where the parent domain of var.domain_name is hosted. If var.domain_name is repo.foo.com, then the value should be zone_id of foo.com."
   type        = string

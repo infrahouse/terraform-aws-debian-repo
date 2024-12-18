@@ -2,3 +2,4 @@ Codename: ${codename}
 Components: main
 Architectures: ${architectures}
 SignWith: ${signwith}
+%{ if package_version_limit != null }Limit: ${package_version_limit}%{ endif }
