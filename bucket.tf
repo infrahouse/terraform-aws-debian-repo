@@ -150,3 +150,10 @@ resource "aws_s3_bucket_logging" "server-logs" {
   target_bucket = aws_s3_bucket.repo-logs.bucket
   target_prefix = "server-side/"
 }
+
+resource "aws_s3_bucket_versioning" "repo" {
+  bucket = aws_s3_bucket.repo.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}

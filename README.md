@@ -203,6 +203,7 @@ module "release_infrahouse_com" {
 | [aws_s3_bucket_ownership_controls.repo-logs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_ownership_controls) | resource |
 | [aws_s3_bucket_policy.bucket-access](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_policy) | resource |
 | [aws_s3_bucket_public_access_block.repo](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block) | resource |
+| [aws_s3_bucket_versioning.repo](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_versioning) | resource |
 | [aws_s3_object.deb-gpg-public-key](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_object) | resource |
 | [aws_s3_object.distributions](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_object) | resource |
 | [aws_s3_object.index-html](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_object) | resource |
@@ -215,6 +216,7 @@ module "release_infrahouse_com" {
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_architectures"></a> [architectures](#input\_architectures) | List of architectures served by the repo | `list(string)` | <pre>[<br>  "amd64"<br>]</pre> | no |
 | <a name="input_bucket_admin_roles"></a> [bucket\_admin\_roles](#input\_bucket\_admin\_roles) | List of AWS IAM role ARN that has permissions to upload to the bucket | `list(string)` | `[]` | no |
 | <a name="input_bucket_force_destroy"></a> [bucket\_force\_destroy](#input\_bucket\_force\_destroy) | If true, the repository bucket will be destroyed even if it contains files. | `bool` | `false` | no |
 | <a name="input_bucket_name"></a> [bucket\_name](#input\_bucket\_name) | S3 bucket name for the repository. | `string` | n/a | yes |
@@ -225,6 +227,7 @@ module "release_infrahouse_com" {
 | <a name="input_http_auth_user"></a> [http\_auth\_user](#input\_http\_auth\_user) | Username for HTTP basic authentication. If not specified, the authentication isn't enabled. | `string` | `null` | no |
 | <a name="input_index_body"></a> [index\_body](#input\_index\_body) | Content of a body tag in index.html. | `string` | `"Stay tuned!"` | no |
 | <a name="input_index_title"></a> [index\_title](#input\_index\_title) | Content of a title tag in index.html. | `string` | `"Debian packages repository"` | no |
+| <a name="input_package_version_limit"></a> [package\_version\_limit](#input\_package\_version\_limit) | Number of versions of a package to keep in the repository. Zero means keep all versions. | `number` | `null` | no |
 | <a name="input_repository_codename"></a> [repository\_codename](#input\_repository\_codename) | Repository codename. Can be focal, jammy, etc. | `string` | n/a | yes |
 | <a name="input_signing_key_readers"></a> [signing\_key\_readers](#input\_signing\_key\_readers) | List of role ARNs that have permission to read GPG signing key and passphrase. | `list(string)` | `null` | no |
 | <a name="input_signing_key_writers"></a> [signing\_key\_writers](#input\_signing\_key\_writers) | List of role ARNs that have permission to write to GPG signing key and passphrase secrets. | `list(string)` | `null` | no |
