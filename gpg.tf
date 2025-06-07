@@ -4,7 +4,7 @@ resource "random_password" "passphrase" {
 
 module "passphrase" {
   source             = "registry.infrahouse.com/infrahouse/secret/aws"
-  version            = "0.5.0"
+  version            = "0.7.9"
   secret_description = "Passphrase for a signing GPG key for ${var.repository_codename}"
   secret_name        = "packager-passphrase-${var.repository_codename}"
   secret_value       = random_password.passphrase.result
@@ -15,7 +15,7 @@ module "passphrase" {
 
 module "key" {
   source             = "registry.infrahouse.com/infrahouse/secret/aws"
-  version            = "0.5.0"
+  version            = "0.7.9"
   secret_description = "Signing GPG key for ${var.repository_codename}"
   secret_name        = "packager-key-${var.repository_codename}"
   tags               = local.tags
