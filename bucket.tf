@@ -30,7 +30,8 @@ resource "aws_s3_bucket_ownership_controls" "repo" {
 data "aws_iam_policy_document" "bucket-access" {
   source_policy_documents = concat(
     [
-      data.aws_iam_policy_document.bucket-cloudfront-access.json
+      data.aws_iam_policy_document.bucket-cloudfront-access.json,
+      data.aws_iam_policy_document.enforce_ssl_policy.json
     ],
     [
       for doc in data.aws_iam_policy_document.bucket-admin : doc.json
@@ -79,6 +80,32 @@ data "aws_iam_policy_document" "bucket-admin" {
   }
 }
 
+data "aws_iam_policy_document" "enforce_ssl_policy" {
+  statement {
+    sid    = "AllowSSLRequestsOnly"
+    effect = "Deny"
+
+    actions = [
+      "s3:*",
+    ]
+
+    resources = [
+      aws_s3_bucket.repo.arn,
+      "${aws_s3_bucket.repo.arn}/*",
+    ]
+
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+      values   = ["false"]
+    }
+  }
+}
 
 resource "aws_s3_bucket_policy" "bucket-access" {
   bucket = aws_s3_bucket.repo.bucket
