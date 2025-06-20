@@ -19,7 +19,7 @@ jobs:
     timeout-minutes: 120
     env:
       GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-      ROLE_ARN: "arn:aws:iam::303467602807:role/sqs-ecs-tester"
+      ROLE_ARN: "arn:aws:iam::303467602807:role/debian-repo-tester"
 
     # Use the Bash shell regardless whether the GitHub Actions runner
     # is ubuntu-latest, macos-latest, or windows-latest
