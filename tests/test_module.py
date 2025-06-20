@@ -2,7 +2,7 @@ from textwrap import dedent
 
 import pytest
 import requests
-from infrahouse_toolkit.terraform import terraform_apply
+from pytest_infrahouse import terraform_apply
 from requests.auth import HTTPBasicAuth
 
 from tests.conftest import (

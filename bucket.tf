@@ -184,3 +184,35 @@ resource "aws_s3_bucket_versioning" "repo" {
     status = "Enabled"
   }
 }
+
+resource "aws_s3_bucket_policy" "repo-logs" {
+  bucket = aws_s3_bucket.repo-logs.id
+  policy = data.aws_iam_policy_document.repo-logs-enforce_ssl_policy.json
+}
+
+data "aws_iam_policy_document" "repo-logs-enforce_ssl_policy" {
+  statement {
+    sid    = "AllowSSLRequestsOnly"
+    effect = "Deny"
+
+    actions = [
+      "s3:*",
+    ]
+
+    resources = [
+      aws_s3_bucket.repo-logs.arn,
+      "${aws_s3_bucket.repo-logs.arn}/*",
+    ]
+
+    principals {
+      type        = "*"
+      identifiers = ["*"]
+    }
+
+    condition {
+      test     = "Bool"
+      variable = "aws:SecureTransport"
+      values   = ["false"]
+    }
+  }
+}

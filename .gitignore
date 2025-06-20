@@ -41,3 +41,4 @@ terraform.rc
 /.idea/
 
 __pycache__
+.pytest_cache
