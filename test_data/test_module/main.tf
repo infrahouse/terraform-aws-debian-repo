@@ -19,4 +19,5 @@ module "test" {
   bucket_admin_roles    = [var.jumphost_role_arn]
   signing_key_writers   = [var.jumphost_role_arn]
   package_version_limit = 0
+  environment           = "development"
 }
