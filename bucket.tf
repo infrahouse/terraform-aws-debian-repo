@@ -1,7 +1,7 @@
 resource "aws_s3_bucket" "repo" {
   bucket        = var.bucket_name
   force_destroy = var.bucket_force_destroy
-  tags          = local.tags
+  tags          = local.default_module_tags
 }
 
 resource "aws_s3_bucket_acl" "repo" {
@@ -129,7 +129,7 @@ resource "aws_s3_object" "index-html" {
     }
   )
   content_type = "text/html"
-  tags         = local.tags
+  tags         = local.default_module_tags
   depends_on = [
     aws_s3_bucket_acl.repo,
     aws_s3_bucket_public_access_block.repo,
@@ -142,7 +142,7 @@ resource "aws_s3_object" "deb-gpg-public-key" {
   key          = "DEB-GPG-KEY-${var.domain_name}"
   content      = var.gpg_public_key
   content_type = "text/plain"
-  tags         = local.tags
+  tags         = local.default_module_tags
   depends_on = [
     aws_s3_bucket_acl.repo,
     aws_s3_bucket_public_access_block.repo,
@@ -152,7 +152,7 @@ resource "aws_s3_object" "deb-gpg-public-key" {
 
 resource "aws_s3_bucket" "repo-logs" {
   bucket = "${var.bucket_name}-logs"
-  tags   = local.tags
+  tags   = local.default_module_tags
 
   force_destroy = var.bucket_force_destroy
 }

@@ -20,6 +20,10 @@ variable "domain_name" {
   type        = string
 }
 
+variable "environment" {
+  description = "Name of environment."
+  type        = string
+}
 variable "architectures" {
   description = "List of architectures served by the repo"
   type        = list(string)
@@ -81,6 +85,11 @@ variable "package_version_limit" {
   description = "Number of versions of a package to keep in the repository. Zero means keep all versions."
   type        = number
   default     = null
+}
+
+variable "tags" {
+  description = "A map of tags to add to resources."
+  default     = {}
 }
 
 variable "zone_id" {
