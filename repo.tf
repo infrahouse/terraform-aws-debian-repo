@@ -11,5 +11,5 @@ resource "aws_s3_object" "distributions" {
     }
   )
   content_type = "text/plain"
-  tags         = local.tags
+  tags         = local.default_module_tags
 }

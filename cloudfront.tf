@@ -51,7 +51,12 @@ resource "aws_cloudfront_distribution" "repo" {
     bucket = aws_s3_bucket.repo-logs.bucket_domain_name
   }
 
-  tags = local.tags
+  tags = merge(
+    local.default_module_tags,
+    {
+      module_version : local.module_version
+    }
+  )
   depends_on = [
     aws_acm_certificate_validation.repo
   ]

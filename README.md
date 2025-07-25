@@ -75,9 +75,11 @@ module "release_infrahouse_com" {
     aws     = aws
     aws.ue1 = aws.aws-us-east-1
   }
-  source               = "registry.infrahouse.com/infrahouse/terraform-aws-debian-repo"
-  version              = "~> 2.2"
+  source  = "registry.infrahouse.com/infrahouse/terraform-aws-debian-repo"
+  version = "2.5.1"
+
   bucket_name          = "infrahouse-release"
+  environment          = "development"
   repository_codename  = "jammy"
   domain_name          = "release.infrahouse.com"
   gpg_public_key       = file("./files/DEB-GPG-KEY-infrahouse-jammy")
