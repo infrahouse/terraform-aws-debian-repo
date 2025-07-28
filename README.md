@@ -76,7 +76,7 @@ module "release_infrahouse_com" {
     aws.ue1 = aws.aws-us-east-1
   }
   source  = "registry.infrahouse.com/infrahouse/terraform-aws-debian-repo"
-  version = "3.0.0"
+  version = "3.0.1"
 
   bucket_name          = "infrahouse-release"
   environment          = "development"
