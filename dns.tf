@@ -8,3 +8,16 @@ resource "aws_route53_record" "repo" {
     zone_id                = aws_cloudfront_distribution.repo.hosted_zone_id
   }
 }
+
+resource "aws_route53_record" "caa_repo" {
+  name    = var.domain_name
+  type    = "CAA"
+  zone_id = var.zone_id
+  ttl     = 300
+  records = [
+    "0 issue \"amazon.com\"",
+    "0 issue \"amazontrust.com\"",
+    "0 issue \"awstrust.com\"",
+    "0 issue \"amazonaws.com\""
+  ]
+}
