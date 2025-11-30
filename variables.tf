@@ -21,8 +21,13 @@ variable "domain_name" {
 }
 
 variable "environment" {
-  description = "Name of environment."
+  description = "Environment name (e.g., development, staging, production). Used for resource tagging and identification."
   type        = string
+
+  validation {
+    condition     = can(regex("^[a-z0-9-]+$", var.environment))
+    error_message = "Environment must contain only lowercase letters, numbers, and hyphens."
+  }
 }
 variable "architectures" {
   description = "List of architectures served by the repo"
@@ -34,10 +39,12 @@ variable "architectures" {
 
 variable "gpg_public_key" {
   description = "Content of the GPG public key used for signing the repository. Note, you'll have to upload the key manually or with 'ih-s3-reprepro ... set-secret-value packager-key-focal ~/packager-key-focal'"
+  type        = string
 }
 
 variable "gpg_sign_with" {
   description = "Email of a packager user."
+  type        = string
 }
 
 variable "http_auth_user" {

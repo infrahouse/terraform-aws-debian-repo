@@ -113,7 +113,6 @@ resource "aws_s3_bucket_policy" "bucket-access" {
   depends_on = [
     aws_s3_bucket_acl.repo,
     aws_s3_bucket_public_access_block.repo,
-    aws_s3_bucket_public_access_block.repo,
     aws_s3_bucket_ownership_controls.repo,
   ]
 }

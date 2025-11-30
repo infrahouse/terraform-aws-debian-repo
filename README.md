@@ -161,6 +161,8 @@ module "release_infrahouse_com" {
   http_auth_password  = var.http_password
 }
 ```
+<!-- BEGIN_TF_DOCS -->
+
 ## Requirements
 
 | Name | Version |
@@ -181,8 +183,8 @@ module "release_infrahouse_com" {
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_key"></a> [key](#module\_key) | registry.infrahouse.com/infrahouse/secret/aws | 0.5.0 |
-| <a name="module_passphrase"></a> [passphrase](#module\_passphrase) | registry.infrahouse.com/infrahouse/secret/aws | 0.5.0 |
+| <a name="module_key"></a> [key](#module\_key) | registry.infrahouse.com/infrahouse/secret/aws | 1.1.1 |
+| <a name="module_passphrase"></a> [passphrase](#module\_passphrase) | registry.infrahouse.com/infrahouse/secret/aws | 1.1.1 |
 
 ## Resources
 
@@ -194,6 +196,7 @@ module "release_infrahouse_com" {
 | [aws_cloudfront_distribution.repo](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution) | resource |
 | [aws_cloudfront_function.http_auth](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_function) | resource |
 | [aws_cloudfront_origin_access_control.repo-storage](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_origin_access_control) | resource |
+| [aws_route53_record.caa_repo](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_record.cert_validation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_record.repo](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_s3_bucket.repo](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket) | resource |
@@ -204,6 +207,7 @@ module "release_infrahouse_com" {
 | [aws_s3_bucket_ownership_controls.repo](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_ownership_controls) | resource |
 | [aws_s3_bucket_ownership_controls.repo-logs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_ownership_controls) | resource |
 | [aws_s3_bucket_policy.bucket-access](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_policy) | resource |
+| [aws_s3_bucket_policy.repo-logs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_policy) | resource |
 | [aws_s3_bucket_public_access_block.repo](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block) | resource |
 | [aws_s3_bucket_versioning.repo](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_versioning) | resource |
 | [aws_s3_object.deb-gpg-public-key](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_object) | resource |
@@ -213,16 +217,19 @@ module "release_infrahouse_com" {
 | [aws_iam_policy_document.bucket-access](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.bucket-admin](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.bucket-cloudfront-access](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.enforce_ssl_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
+| [aws_iam_policy_document.repo-logs-enforce_ssl_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_architectures"></a> [architectures](#input\_architectures) | List of architectures served by the repo | `list(string)` | <pre>[<br>  "amd64"<br>]</pre> | no |
+| <a name="input_architectures"></a> [architectures](#input\_architectures) | List of architectures served by the repo | `list(string)` | <pre>[<br/>  "amd64"<br/>]</pre> | no |
 | <a name="input_bucket_admin_roles"></a> [bucket\_admin\_roles](#input\_bucket\_admin\_roles) | List of AWS IAM role ARN that has permissions to upload to the bucket | `list(string)` | `[]` | no |
 | <a name="input_bucket_force_destroy"></a> [bucket\_force\_destroy](#input\_bucket\_force\_destroy) | If true, the repository bucket will be destroyed even if it contains files. | `bool` | `false` | no |
 | <a name="input_bucket_name"></a> [bucket\_name](#input\_bucket\_name) | S3 bucket name for the repository. | `string` | n/a | yes |
 | <a name="input_domain_name"></a> [domain\_name](#input\_domain\_name) | Domain name where the repository will be available. | `string` | n/a | yes |
+| <a name="input_environment"></a> [environment](#input\_environment) | Name of environment. | `string` | n/a | yes |
 | <a name="input_gpg_public_key"></a> [gpg\_public\_key](#input\_gpg\_public\_key) | Content of the GPG public key used for signing the repository. Note, you'll have to upload the key manually or with 'ih-s3-reprepro ... set-secret-value packager-key-focal ~/packager-key-focal' | `any` | n/a | yes |
 | <a name="input_gpg_sign_with"></a> [gpg\_sign\_with](#input\_gpg\_sign\_with) | Email of a packager user. | `any` | n/a | yes |
 | <a name="input_http_auth_password"></a> [http\_auth\_password](#input\_http\_auth\_password) | Password for HTTP basic authentication. | `string` | `null` | no |
@@ -233,6 +240,7 @@ module "release_infrahouse_com" {
 | <a name="input_repository_codename"></a> [repository\_codename](#input\_repository\_codename) | Repository codename. Can be focal, jammy, etc. | `string` | n/a | yes |
 | <a name="input_signing_key_readers"></a> [signing\_key\_readers](#input\_signing\_key\_readers) | List of role ARNs that have permission to read GPG signing key and passphrase. | `list(string)` | `null` | no |
 | <a name="input_signing_key_writers"></a> [signing\_key\_writers](#input\_signing\_key\_writers) | List of role ARNs that have permission to write to GPG signing key and passphrase secrets. | `list(string)` | `null` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to add to resources. | `map` | `{}` | no |
 | <a name="input_zone_id"></a> [zone\_id](#input\_zone\_id) | Route53 zone id where the parent domain of var.domain\_name is hosted. If var.domain\_name is repo.foo.com, then the value should be zone\_id of foo.com. | `string` | n/a | yes |
 
 ## Outputs
@@ -246,3 +254,4 @@ module "release_infrahouse_com" {
 | <a name="output_release_bucket"></a> [release\_bucket](#output\_release\_bucket) | Bucket name that hosts repository files. |
 | <a name="output_release_bucket_arn"></a> [release\_bucket\_arn](#output\_release\_bucket\_arn) | Bucket ARN that hosts repository files. |
 | <a name="output_repo_url"></a> [repo\_url](#output\_repo\_url) | Repository URL. |
+<!-- END_TF_DOCS -->
