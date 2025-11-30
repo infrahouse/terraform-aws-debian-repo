@@ -42,3 +42,7 @@ terraform.rc
 
 __pycache__
 .pytest_cache
+
+# Claude Code local settings
+.claude/*.local.json
+.claude/reviews/
