@@ -183,6 +183,7 @@ module "release_infrahouse_com" {
 
 | Name | Source | Version |
 |------|--------|---------|
+| <a name="module_backup_key"></a> [backup\_key](#module\_backup\_key) | registry.infrahouse.com/infrahouse/key/aws | 0.3.0 |
 | <a name="module_key"></a> [key](#module\_key) | registry.infrahouse.com/infrahouse/secret/aws | 1.1.1 |
 | <a name="module_passphrase"></a> [passphrase](#module\_passphrase) | registry.infrahouse.com/infrahouse/secret/aws | 1.1.1 |
 
@@ -192,10 +193,16 @@ module "release_infrahouse_com" {
 |------|------|
 | [aws_acm_certificate.repo](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/acm_certificate) | resource |
 | [aws_acm_certificate_validation.repo](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/acm_certificate_validation) | resource |
+| [aws_backup_plan.repo](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/backup_plan) | resource |
+| [aws_backup_selection.repo](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/backup_selection) | resource |
+| [aws_backup_vault.repo](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/backup_vault) | resource |
 | [aws_cloudfront_cache_policy.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_cache_policy) | resource |
 | [aws_cloudfront_distribution.repo](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_distribution) | resource |
 | [aws_cloudfront_function.http_auth](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_function) | resource |
 | [aws_cloudfront_origin_access_control.repo-storage](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudfront_origin_access_control) | resource |
+| [aws_iam_role.backup](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
+| [aws_iam_role_policy_attachment.backup_s3](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.restore_s3](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_route53_record.caa_repo](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_record.cert_validation](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
 | [aws_route53_record.repo](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_record) | resource |
@@ -214,6 +221,7 @@ module "release_infrahouse_com" {
 | [aws_s3_object.distributions](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_object) | resource |
 | [aws_s3_object.index-html](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_object) | resource |
 | [random_password.passphrase](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/password) | resource |
+| [aws_iam_policy_document.backup_assume_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.bucket-access](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.bucket-admin](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.bucket-cloudfront-access](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
@@ -225,13 +233,16 @@ module "release_infrahouse_com" {
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_architectures"></a> [architectures](#input\_architectures) | List of architectures served by the repo | `list(string)` | <pre>[<br/>  "amd64"<br/>]</pre> | no |
+| <a name="input_backup_force_destroy"></a> [backup\_force\_destroy](#input\_backup\_force\_destroy) | If true, the backup vault will be destroyed even if it contains recovery points. | `bool` | `false` | no |
+| <a name="input_backup_retention_days"></a> [backup\_retention\_days](#input\_backup\_retention\_days) | Number of days to retain S3 backups. | `number` | `30` | no |
+| <a name="input_backup_schedule"></a> [backup\_schedule](#input\_backup\_schedule) | Cron expression for the backup schedule in AWS Backup format.<br/>Default is daily at 5:00 AM UTC. | `string` | `"cron(0 5 * * ? *)"` | no |
 | <a name="input_bucket_admin_roles"></a> [bucket\_admin\_roles](#input\_bucket\_admin\_roles) | List of AWS IAM role ARN that has permissions to upload to the bucket | `list(string)` | `[]` | no |
 | <a name="input_bucket_force_destroy"></a> [bucket\_force\_destroy](#input\_bucket\_force\_destroy) | If true, the repository bucket will be destroyed even if it contains files. | `bool` | `false` | no |
 | <a name="input_bucket_name"></a> [bucket\_name](#input\_bucket\_name) | S3 bucket name for the repository. | `string` | n/a | yes |
 | <a name="input_domain_name"></a> [domain\_name](#input\_domain\_name) | Domain name where the repository will be available. | `string` | n/a | yes |
-| <a name="input_environment"></a> [environment](#input\_environment) | Name of environment. | `string` | n/a | yes |
-| <a name="input_gpg_public_key"></a> [gpg\_public\_key](#input\_gpg\_public\_key) | Content of the GPG public key used for signing the repository. Note, you'll have to upload the key manually or with 'ih-s3-reprepro ... set-secret-value packager-key-focal ~/packager-key-focal' | `any` | n/a | yes |
-| <a name="input_gpg_sign_with"></a> [gpg\_sign\_with](#input\_gpg\_sign\_with) | Email of a packager user. | `any` | n/a | yes |
+| <a name="input_environment"></a> [environment](#input\_environment) | Environment name (e.g., development, staging, production). Used for resource tagging and identification. | `string` | n/a | yes |
+| <a name="input_gpg_public_key"></a> [gpg\_public\_key](#input\_gpg\_public\_key) | Content of the GPG public key used for signing the repository. Note, you'll have to upload the key manually or with 'ih-s3-reprepro ... set-secret-value packager-key-focal ~/packager-key-focal' | `string` | n/a | yes |
+| <a name="input_gpg_sign_with"></a> [gpg\_sign\_with](#input\_gpg\_sign\_with) | Email of a packager user. | `string` | n/a | yes |
 | <a name="input_http_auth_password"></a> [http\_auth\_password](#input\_http\_auth\_password) | Password for HTTP basic authentication. | `string` | `null` | no |
 | <a name="input_http_auth_user"></a> [http\_auth\_user](#input\_http\_auth\_user) | Username for HTTP basic authentication. If not specified, the authentication isn't enabled. | `string` | `null` | no |
 | <a name="input_index_body"></a> [index\_body](#input\_index\_body) | Content of a body tag in index.html. | `string` | `"Stay tuned!"` | no |
@@ -247,6 +258,7 @@ module "release_infrahouse_com" {
 
 | Name | Description |
 |------|-------------|
+| <a name="output_backup_vault_arn"></a> [backup\_vault\_arn](#output\_backup\_vault\_arn) | ARN of the AWS Backup vault for the repository bucket. |
 | <a name="output_packager_key_passphrase_secret_arn"></a> [packager\_key\_passphrase\_secret\_arn](#output\_packager\_key\_passphrase\_secret\_arn) | ARN of a secret that will store a GPG private key passphrase. |
 | <a name="output_packager_key_passphrase_secret_id"></a> [packager\_key\_passphrase\_secret\_id](#output\_packager\_key\_passphrase\_secret\_id) | Identifier of a secret that will store a GPG private key passphrase. |
 | <a name="output_packager_key_secret_arn"></a> [packager\_key\_secret\_arn](#output\_packager\_key\_secret\_arn) | ARN of a secret that will store a GPG private key. |
