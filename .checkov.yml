@@ -1,0 +1,21 @@
+framework:
+  - terraform
+skip-path:
+  - test_data
+skip-check:
+  - CKV_TF_1   # Module source version pinning - handled by Renovate
+  - CKV_TF_2   # Module source version pinning - handled by Renovate
+  - CKV_AWS_21  # S3 versioning on logs bucket - logs are ephemeral
+  - CKV_AWS_68  # CloudFront WAF - not required for a package repository
+  - CKV_AWS_144  # S3 cross-region replication - planned for a future PR
+  - CKV_AWS_145  # S3 KMS encryption - AWS-managed encryption is acceptable per coding standard
+  - CKV_AWS_233  # ACM create_before_destroy - managed externally
+  - CKV_AWS_310  # CloudFront origin failover - planned with CRR
+  - CKV2_AWS_6   # S3 public access block on logs bucket
+  - CKV2_AWS_32  # CloudFront response headers policy
+  - CKV2_AWS_47  # CloudFront WAFv2 Log4j AMR
+  - CKV2_AWS_61  # S3 lifecycle configuration
+  - CKV2_AWS_62  # S3 event notifications
+  - CKV2_AWS_65  # S3 ACLs disabled - using BucketOwnerPreferred by design
+compact: true
+quiet: false

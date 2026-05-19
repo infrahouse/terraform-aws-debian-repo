@@ -25,8 +25,19 @@ resource "aws_iam_role_policy_attachment" "restore_s3" {
   policy_arn = "arn:aws:iam::aws:policy/AWSBackupServiceRolePolicyForS3Restore"
 }
 
+module "backup_key" {
+  source          = "registry.infrahouse.com/infrahouse/key/aws"
+  version         = "0.3.0"
+  environment     = var.environment
+  key_description = "Encryption key for ${var.bucket_name} backup vault"
+  key_name        = "${var.bucket_name}-backup"
+  service_name    = "debian-repo-${var.repository_codename}"
+  tags            = var.tags
+}
+
 resource "aws_backup_vault" "repo" {
   name          = "${var.bucket_name}-backup"
+  kms_key_arn   = module.backup_key.kms_key_arn
   force_destroy = var.backup_force_destroy
   tags          = local.default_module_tags
 }
