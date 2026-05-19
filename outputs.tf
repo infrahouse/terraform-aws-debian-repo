@@ -32,3 +32,8 @@ output "packager_key_passphrase_secret_id" {
   description = "Identifier of a secret that will store a GPG private key passphrase."
   value       = module.passphrase.secret_id
 }
+
+output "backup_vault_arn" {
+  description = "ARN of the AWS Backup vault for the repository bucket."
+  value       = aws_backup_vault.repo.arn
+}

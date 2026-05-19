@@ -15,6 +15,32 @@ variable "bucket_force_destroy" {
   default     = false
 }
 
+variable "backup_force_destroy" {
+  description = "If true, the backup vault will be destroyed even if it contains recovery points."
+  type        = bool
+  default     = false
+}
+
+variable "backup_retention_days" {
+  description = "Number of days to retain S3 backups."
+  type        = number
+  default     = 30
+
+  validation {
+    condition     = var.backup_retention_days >= 1
+    error_message = "backup_retention_days must be at least 1."
+  }
+}
+
+variable "backup_schedule" {
+  description = <<-EOT
+    Cron expression for the backup schedule in AWS Backup format.
+    Default is daily at 5:00 AM UTC.
+  EOT
+  type        = string
+  default     = "cron(0 5 * * ? *)"
+}
+
 variable "domain_name" {
   description = "Domain name where the repository will be available."
   type        = string

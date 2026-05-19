@@ -13,6 +13,7 @@ module "test" {
   gpg_sign_with         = "packager-${var.ubuntu_codename}@infrahouse.com"
   repository_codename   = var.ubuntu_codename
   bucket_force_destroy  = true
+  backup_force_destroy  = true
   zone_id               = data.aws_route53_zone.cicd.zone_id
   http_auth_user        = var.http_user
   http_auth_password    = var.http_password
