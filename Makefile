@@ -28,7 +28,8 @@ install-hooks:  ## Install repo hooks
 	@echo "Checking and installing hooks"
 	@test -d .git/hooks || (echo "Looks like you are not in a Git repo" ; exit 1)
 	@test -L .git/hooks/pre-commit || ln -fs ../../hooks/pre-commit .git/hooks/pre-commit
-	@chmod +x .git/hooks/pre-commit
+	@test -L .git/hooks/commit-msg || ln -fs ../../hooks/commit-msg .git/hooks/commit-msg
+	@chmod +x .git/hooks/pre-commit .git/hooks/commit-msg
 
 .PHONY: format
 format:  ## Format terraform files
@@ -59,9 +60,9 @@ test-clean:  ## Run a test and destroy resources
 		tests/test_module.py
 
 .PHONY: bootstrap
-bootstrap: ## bootstrap the development environment
-	pip install -U "pip ~= 23.1"
-	pip install -U "setuptools ~= 68.0"
+bootstrap: install-hooks ## bootstrap the development environment
+	pip install -U "pip ~= 26.1"
+	pip install -U "setuptools ~= 82.0"
 	pip install -r requirements.txt
 
 BROWSER := python -c "$$BROWSER_PYSCRIPT"
@@ -161,10 +162,10 @@ release-major: ## Release a major version (MAJOR.0.0)
 
 .PHONY: clean
 clean:  ## Remove various artifacts
-	rm -rf test_data/gha-admin/.terraform \
-		test_data/gha-admin/.terraform.lock.hcl \
-		test_data/gha-admin/terraform.tfstate \
-		test_data/gha-admin/terraform.tfstate.backup \
+	rm -rf test_data/test_module/.terraform \
+		test_data/test_module/.terraform.lock.hcl \
+		test_data/test_module/terraform.tfstate \
+		test_data/test_module/terraform.tfstate.backup \
 		.pytest_cache \
 		tf-apply-trace.txt \
 		tf-destroy-trace.txt
