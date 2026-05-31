@@ -7,7 +7,6 @@ from requests.auth import HTTPBasicAuth
 
 from tests.conftest import (
     LOG,
-    TRACE_TERRAFORM,
     UBUNTU_CODENAME,
 )
 
@@ -35,42 +34,29 @@ def test_module(
     jumphost_role_name = jumphost["jumphost_role_name"]["value"]
 
     with open(osp.join(terraform_dir, "terraform.tfvars"), "w") as fp:
-        fp.write(
-            dedent(
-                f"""
+        fp.write(dedent(f"""
                 test_zone          = "{test_zone_name}"
                 ubuntu_codename    = "{UBUNTU_CODENAME}"
                 jumphost_role_arn  = "{jumphost_role_arn}"
                 jumphost_role_name = "{jumphost_role_name}"
-                """
-            )
-        )
+                """))
         if test_role_arn:
-            fp.write(
-                dedent(
-                    f"""
+            fp.write(dedent(f"""
                     role_arn        = "{test_role_arn}"
-                    """
-                )
-            )
+                    """))
         if http_user:
-            fp.write(
-                dedent(
-                    f"""
+            fp.write(dedent(f"""
                     http_user     = "{http_user}"
                     http_password = "{http_password}" 
-                    """
-                )
-            )
+                    """))
 
     with terraform_apply(
         terraform_dir,
         destroy_after=not keep_after,
-        json_output=True,
-        enable_trace=TRACE_TERRAFORM,
     ) as tf_output:
         assert tf_output["release_bucket"]["value"]
         if http_user:
+            assert http_password is not None
             response = requests.get(f"https://debian-repo-test.{test_zone_name}")
             assert response.status_code == 401
             response = requests.get(
