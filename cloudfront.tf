@@ -5,7 +5,7 @@ resource "aws_cloudfront_distribution" "repo" {
   aliases             = [var.domain_name]
 
   origin {
-    domain_name              = aws_s3_bucket.repo.bucket_regional_domain_name
+    domain_name              = module.repo_bucket.bucket_regional_domain_name
     origin_id                = local.origin_id
     origin_access_control_id = aws_cloudfront_origin_access_control.repo-storage.id
   }
@@ -48,7 +48,7 @@ resource "aws_cloudfront_distribution" "repo" {
   }
 
   logging_config {
-    bucket = aws_s3_bucket.repo-logs.bucket_domain_name
+    bucket = module.logs_bucket.bucket_domain_name
   }
 
   tags = merge(
@@ -92,7 +92,9 @@ resource "aws_cloudfront_function" "http_auth" {
   code = templatefile(
     "${path.module}/handler-http-auth.js.tftpl",
     {
-      auth_str = base64encode("${var.http_auth_user != null ? var.http_auth_user : ""}:${var.http_auth_password != null ? var.http_auth_password : ""}")
+      auth_str = base64encode(
+        "${coalesce(var.http_auth_user, "")}:${coalesce(var.http_auth_password, "")}"
+      )
     }
   )
 }

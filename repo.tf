@@ -1,5 +1,5 @@
 resource "aws_s3_object" "distributions" {
-  bucket = aws_s3_bucket.repo.bucket
+  bucket = module.repo_bucket.bucket_name
   key    = "conf/distributions"
   content = templatefile(
     local.distributions_path,

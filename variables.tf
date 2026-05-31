@@ -114,6 +114,11 @@ variable "signing_key_writers" {
   default     = null
 }
 
+variable "replication_region" {
+  description = "AWS region for the S3 cross-region replication replica buckets."
+  type        = string
+}
+
 variable "package_version_limit" {
   description = "Number of versions of a package to keep in the repository. Zero means keep all versions."
   type        = number

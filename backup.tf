@@ -26,8 +26,9 @@ resource "aws_iam_role_policy_attachment" "restore_s3" {
 }
 
 module "backup_key" {
-  source          = "registry.infrahouse.com/infrahouse/key/aws"
-  version         = "0.3.0"
+  source  = "registry.infrahouse.com/infrahouse/key/aws"
+  version = "0.3.0"
+
   environment     = var.environment
   key_description = "Encryption key for ${var.bucket_name} backup vault"
   key_name        = "${var.bucket_name}-backup"
@@ -64,6 +65,6 @@ resource "aws_backup_selection" "repo" {
   plan_id      = aws_backup_plan.repo.id
 
   resources = [
-    aws_s3_bucket.repo.arn
+    module.repo_bucket.bucket_arn
   ]
 }

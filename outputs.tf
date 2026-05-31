@@ -5,12 +5,12 @@ output "repo_url" {
 
 output "release_bucket" {
   description = "Bucket name that hosts repository files."
-  value       = aws_s3_bucket.repo.bucket
+  value       = module.repo_bucket.bucket_name
 }
 
 output "release_bucket_arn" {
   description = "Bucket ARN that hosts repository files."
-  value       = aws_s3_bucket.repo.arn
+  value       = module.repo_bucket.bucket_arn
 }
 
 output "packager_key_secret_arn" {
