@@ -93,7 +93,7 @@ resource "aws_cloudfront_function" "http_auth" {
     "${path.module}/handler-http-auth.js.tftpl",
     {
       auth_str = base64encode(
-        "${coalesce(var.http_auth_user, "")}:${coalesce(var.http_auth_password, "")}"
+        "${var.http_auth_user != null ? var.http_auth_user : ""}:${var.http_auth_password != null ? var.http_auth_password : ""}"
       )
     }
   )
