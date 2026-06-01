@@ -21,4 +21,5 @@ module "test" {
   signing_key_writers   = [var.jumphost_role_arn]
   package_version_limit = 0
   environment           = "development"
+  replication_region    = "us-west-2"
 }
