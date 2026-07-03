@@ -19,7 +19,9 @@ module "oss_repo" {
   environment         = "production"
   repository_codename = "noble"
   domain_name         = "packages.example.com"
-  gpg_public_key      = file("./files/DEB-GPG-KEY-my-company")
+  gpg_public_keys     = [
+    file("./files/DEB-GPG-KEY-my-company")
+  ]
   gpg_sign_with       = "packager@example.com"
   zone_id             = data.aws_route53_zone.example.id
 }
@@ -42,7 +44,9 @@ module "private_repo" {
   environment         = "production"
   repository_codename = "noble"
   domain_name         = "internal-packages.example.com"
-  gpg_public_key      = file("./files/DEB-GPG-KEY-my-company")
+  gpg_public_keys     = [
+    file("./files/DEB-GPG-KEY-my-company")
+  ]
   gpg_sign_with       = "packager@example.com"
   zone_id             = data.aws_route53_zone.example.id
 
@@ -68,7 +72,9 @@ module "repo_noble" {
   environment         = "production"
   repository_codename = "noble"
   domain_name         = "noble.packages.example.com"
-  gpg_public_key      = file("./files/DEB-GPG-KEY-my-company")
+  gpg_public_keys     = [
+    file("./files/DEB-GPG-KEY-my-company")
+  ]
   gpg_sign_with       = "packager@example.com"
   zone_id             = data.aws_route53_zone.example.id
 }
@@ -85,7 +91,9 @@ module "repo_jammy" {
   environment         = "production"
   repository_codename = "jammy"
   domain_name         = "jammy.packages.example.com"
-  gpg_public_key      = file("./files/DEB-GPG-KEY-my-company")
+  gpg_public_keys     = [
+    file("./files/DEB-GPG-KEY-my-company")
+  ]
   gpg_sign_with       = "packager@example.com"
   zone_id             = data.aws_route53_zone.example.id
 }
@@ -108,7 +116,9 @@ module "debian_repo" {
   environment         = "production"
   repository_codename = "noble"
   domain_name         = "packages.example.com"
-  gpg_public_key      = file("./files/DEB-GPG-KEY-my-company")
+  gpg_public_keys     = [
+    file("./files/DEB-GPG-KEY-my-company")
+  ]
   gpg_sign_with       = "packager@example.com"
   zone_id             = data.aws_route53_zone.example.id
 
@@ -149,7 +159,9 @@ module "debian_repo" {
   environment         = "production"
   repository_codename = "noble"
   domain_name         = "packages.example.com"
-  gpg_public_key      = file("./files/DEB-GPG-KEY-my-company")
+  gpg_public_keys     = [
+    file("./files/DEB-GPG-KEY-my-company")
+  ]
   gpg_sign_with       = "packager@example.com"
   zone_id             = data.aws_route53_zone.example.id
   architectures       = ["amd64", "arm64"]
@@ -173,7 +185,9 @@ module "debian_repo" {
   environment         = "production"
   repository_codename = "noble"
   domain_name         = "packages.example.com"
-  gpg_public_key      = file("./files/DEB-GPG-KEY-my-company")
+  gpg_public_keys     = [
+    file("./files/DEB-GPG-KEY-my-company")
+  ]
   gpg_sign_with       = "packager@example.com"
   zone_id             = data.aws_route53_zone.example.id
 

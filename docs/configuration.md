@@ -9,8 +9,8 @@ This page documents all available configuration options.
 | `bucket_name` | S3 bucket name for the repository |
 | `domain_name` | Domain name where the repository will be available |
 | `environment` | Environment name (e.g., "production") |
-| `gpg_public_key` | Content of the GPG public key for signing |
-| `gpg_sign_with` | Email address of the GPG signing key |
+| `gpg_public_keys` | Armored GPG public key(s) to publish; concatenated into one keyring so clients trust a Release signed by any of them |
+| `gpg_sign_with` | Signing key identifier(s): a packager email or space-separated GPG key IDs / fingerprints |
 | `repository_codename` | Distribution codename (e.g., "noble", "jammy") |
 | `zone_id` | Route53 zone ID for the parent domain |
 
@@ -84,8 +84,8 @@ module "debian_repo" {
 
 | Variable | Type | Default | Description |
 |----------|------|---------|-------------|
-| `gpg_public_key` | string | (required) | Armored GPG public key content |
-| `gpg_sign_with` | string | (required) | Email of the signing key |
+| `gpg_public_keys` | list(string) | (required) | Armored GPG public keys to publish (concatenated into one keyring bundle) |
+| `gpg_sign_with` | string | (required) | Packager email or space-separated GPG key IDs to sign with |
 | `signing_key_readers` | list(string) | `null` | Role ARNs that can read the GPG key |
 | `signing_key_writers` | list(string) | `null` | Role ARNs that can write/rotate the GPG key |
 

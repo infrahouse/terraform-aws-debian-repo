@@ -97,7 +97,7 @@ resource "aws_s3_object" "index-html" {
 resource "aws_s3_object" "deb-gpg-public-key" {
   bucket       = module.repo_bucket.bucket_name
   key          = "DEB-GPG-KEY-${var.domain_name}"
-  content      = var.gpg_public_key
+  content      = join("\n", var.gpg_public_keys)
   content_type = "text/plain"
   tags         = local.default_module_tags
 }

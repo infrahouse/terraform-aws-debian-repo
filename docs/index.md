@@ -46,7 +46,9 @@ module "debian_repo" {
   environment         = "production"
   repository_codename = "noble"
   domain_name         = "packages.example.com"
-  gpg_public_key      = file("./files/DEB-GPG-KEY-my-company")
+  gpg_public_keys     = [
+    file("./files/DEB-GPG-KEY-my-company")
+  ]
   gpg_sign_with       = "packager@example.com"
   zone_id             = data.aws_route53_zone.example.id
 }

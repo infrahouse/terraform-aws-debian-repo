@@ -63,13 +63,31 @@ variable "architectures" {
   ]
 }
 
-variable "gpg_public_key" {
-  description = "Content of the GPG public key used for signing the repository. Note, you'll have to upload the key manually or with 'ih-s3-reprepro ... set-secret-value packager-key-focal ~/packager-key-focal'"
-  type        = string
+variable "gpg_public_keys" {
+  description = <<-EOT
+    Armored GPG public keys to publish for repository verification. They are concatenated into the
+    single published key object (DEB-GPG-KEY-<domain_name>); apt trusts a Release signed by any key
+    in the resulting keyring. During a signing-key rotation this holds both the outgoing and
+    incoming keys so clients trust a Release signed by either. Each list element is a full armored
+    public key block.
+
+    The private signing key(s) are uploaded out-of-band with
+    'ih-secrets set packager-key-<codename> ~/packager-key-<codename>'.
+  EOT
+  type        = list(string)
+
+  validation {
+    condition     = length(var.gpg_public_keys) >= 1
+    error_message = "gpg_public_keys must contain at least one armored GPG public key."
+  }
 }
 
 variable "gpg_sign_with" {
-  description = "Email of a packager user."
+  description = <<-EOT
+    Signing key identifier(s) for reprepro's SignWith in conf/distributions. Accepts a packager
+    email or one or more space-separated GPG key IDs / fingerprints. During a key rotation, set this
+    to both the outgoing and incoming key IDs to dual-sign the repository.
+  EOT
   type        = string
 }
 

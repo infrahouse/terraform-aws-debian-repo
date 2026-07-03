@@ -64,7 +64,9 @@ module "debian_repo" {
   environment         = "production"
   repository_codename = "noble"
   domain_name         = "packages.example.com"
-  gpg_public_key      = file("./files/DEB-GPG-KEY-my-company")
+  gpg_public_keys     = [
+    file("./files/DEB-GPG-KEY-my-company")
+  ]
   gpg_sign_with       = "packager@example.com"
   zone_id             = data.aws_route53_zone.example.id
 }
@@ -156,8 +158,8 @@ This project is licensed under the Apache License 2.0 -- see [LICENSE](LICENSE) 
 | <a name="input_bucket_name"></a> [bucket\_name](#input\_bucket\_name) | S3 bucket name for the repository. | `string` | n/a | yes |
 | <a name="input_domain_name"></a> [domain\_name](#input\_domain\_name) | Domain name where the repository will be available. | `string` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | Environment name (e.g., development, staging, production). Used for resource tagging and identification. | `string` | n/a | yes |
-| <a name="input_gpg_public_key"></a> [gpg\_public\_key](#input\_gpg\_public\_key) | Content of the GPG public key used for signing the repository. Note, you'll have to upload the key manually or with 'ih-s3-reprepro ... set-secret-value packager-key-focal ~/packager-key-focal' | `string` | n/a | yes |
-| <a name="input_gpg_sign_with"></a> [gpg\_sign\_with](#input\_gpg\_sign\_with) | Email of a packager user. | `string` | n/a | yes |
+| <a name="input_gpg_public_keys"></a> [gpg\_public\_keys](#input\_gpg\_public\_keys) | Armored GPG public keys to publish for repository verification. They are concatenated into the<br/>single published key object (DEB-GPG-KEY-<domain\_name>); apt trusts a Release signed by any key<br/>in the resulting keyring. During a signing-key rotation this holds both the outgoing and<br/>incoming keys so clients trust a Release signed by either. Each list element is a full armored<br/>public key block.<br/><br/>The private signing key(s) are uploaded out-of-band with<br/>'ih-secrets set packager-key-<codename> ~/packager-key-<codename>'. | `list(string)` | n/a | yes |
+| <a name="input_gpg_sign_with"></a> [gpg\_sign\_with](#input\_gpg\_sign\_with) | Signing key identifier(s) for reprepro's SignWith in conf/distributions. Accepts a packager<br/>email or one or more space-separated GPG key IDs / fingerprints. During a key rotation, set this<br/>to both the outgoing and incoming key IDs to dual-sign the repository. | `string` | n/a | yes |
 | <a name="input_http_auth_password"></a> [http\_auth\_password](#input\_http\_auth\_password) | Password for HTTP basic authentication. | `string` | `null` | no |
 | <a name="input_http_auth_user"></a> [http\_auth\_user](#input\_http\_auth\_user) | Username for HTTP basic authentication. If not specified, the authentication isn't enabled. | `string` | `null` | no |
 | <a name="input_index_body"></a> [index\_body](#input\_index\_body) | Content of a body tag in index.html. | `string` | `"Stay tuned!"` | no |
