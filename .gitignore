@@ -46,3 +46,4 @@ __pycache__
 # Claude Code local settings
 .claude/*.local.json
 .claude/reviews/
+.claude/plans/*.local.md
