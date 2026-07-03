@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.0.0] - 2026-07-03
+
+### Features
+
+- Accept a list of GPG public keys (gpg_public_keys)
+
+### Miscellaneous Tasks
+
+- Ignore local plans
+
 ## [3.3.0] - 2026-06-01
 
 ### Bug Fixes
