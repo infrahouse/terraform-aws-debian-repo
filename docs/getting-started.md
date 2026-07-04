@@ -11,24 +11,34 @@ This guide walks you through deploying your first Debian APT repository.
 
 ### GPG Key Pair
 
-You need a GPG key pair for signing packages. If you don't have one:
+You need a GPG key pair for signing packages. Generate it **non-interactively** (RSA-4096,
+2-year validity). Use a temporary passphrase for now — you'll align it to the Terraform-managed
+passphrase after the first apply (Step 3):
 
 ```bash
-gpg --full-gen-key
+gpg --batch --gen-key <<'EOF'
+%echo Generating packager key
+Key-Type: RSA
+Key-Length: 4096
+Subkey-Type: RSA
+Subkey-Length: 4096
+Name-Real: My Company Packager
+Name-Email: packager@example.com
+Expire-Date: 2y
+Passphrase: change-me-after-first-apply
+%commit
+EOF
 ```
-
-Choose:
-
-- Key type: RSA and RSA
-- Key size: 4096 bits
-- Validity: 2 years (recommended)
-- Name/email: e.g., "My Company Packager" / `packager@example.com`
 
 Export the public key:
 
 ```bash
 gpg --armor --export packager@example.com > ./files/DEB-GPG-KEY-my-company
 ```
+
+> **Rotating an existing repo's key** (not creating the first one)? Don't realign the passphrase
+> as in Step 3 — the passphrase secret already exists, so generate the new key **with** it and
+> publish both keys during an overlap. See the GPG key rotation runbook.
 
 ### Tools
 
@@ -62,12 +72,15 @@ module "debian_repo" {
     aws.ue1 = aws.aws-us-east-1
   }
   source  = "registry.infrahouse.com/infrahouse/debian-repo/aws"
-  version = "3.2.0"
+  version = "4.0.0"
 
   bucket_name         = "my-company-packages-noble"
   environment         = "production"
   repository_codename = "noble"
   domain_name         = "packages.example.com"
+  # Required: region for the S3 cross-region replication replica buckets.
+  # Must differ from the primary region (us-west-1 above).
+  replication_region  = "us-east-1"
   gpg_public_keys     = [
     file("./files/DEB-GPG-KEY-my-company")
   ]

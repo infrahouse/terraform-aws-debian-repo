@@ -64,6 +64,7 @@ module "debian_repo" {
   environment         = "production"
   repository_codename = "noble"
   domain_name         = "packages.example.com"
+  replication_region = "us-east-1"
   gpg_public_keys     = [
     file("./files/DEB-GPG-KEY-my-company")
   ]
