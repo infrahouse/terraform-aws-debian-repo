@@ -89,6 +89,9 @@ module "debian_repo" {
 | `signing_key_readers` | list(string) | `null` | Role ARNs that can read the GPG key |
 | `signing_key_writers` | list(string) | `null` | Role ARNs that can write/rotate the GPG key |
 
+To rotate the signing key with zero downtime (before it expires or if it is compromised), follow the
+[GPG Signing Key Rotation Runbook](key-rotation.md).
+
 ## Backup
 
 | Variable | Type | Default | Description |
