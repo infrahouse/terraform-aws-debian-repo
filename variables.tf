@@ -152,3 +152,19 @@ variable "zone_id" {
   description = "Route53 zone id where the parent domain of var.domain_name is hosted. If var.domain_name is repo.foo.com, then the value should be zone_id of foo.com."
   type        = string
 }
+
+variable "web_acl_arn" {
+  description = <<-EOT
+    ARN of an AWS WAFv2 Web ACL (scope CLOUDFRONT, must exist in us-east-1) to
+    associate with the repository's CloudFront distribution, e.g. to restrict
+    access to a set of known office/VPN IP ranges. Null (the default) leaves
+    the distribution without a Web ACL, unchanged from prior behavior.
+  EOT
+  type        = string
+  default     = null
+
+  validation {
+    condition     = var.web_acl_arn == null ? true : can(regex("^arn:aws:wafv2:us-east-1:[0-9]{12}:global/webacl/", var.web_acl_arn))
+    error_message = "web_acl_arn must be a CLOUDFRONT-scope WAFv2 Web ACL ARN (arn:aws:wafv2:us-east-1:<account>:global/webacl/...), or null. Got: ${coalesce(var.web_acl_arn, "null")}"
+  }
+}

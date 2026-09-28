@@ -170,6 +170,7 @@ This project is licensed under the Apache License 2.0 -- see [LICENSE](LICENSE) 
 | <a name="input_signing_key_readers"></a> [signing\_key\_readers](#input\_signing\_key\_readers) | List of role ARNs that have permission to read GPG signing key and passphrase. | `list(string)` | `null` | no |
 | <a name="input_signing_key_writers"></a> [signing\_key\_writers](#input\_signing\_key\_writers) | List of role ARNs that have permission to write to GPG signing key and passphrase secrets. | `list(string)` | `null` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to add to resources. | `map` | `{}` | no |
+| <a name="input_web_acl_arn"></a> [web\_acl\_arn](#input\_web\_acl\_arn) | ARN of an AWS WAFv2 Web ACL (scope CLOUDFRONT, must exist in us-east-1) to<br/>associate with the repository's CloudFront distribution, e.g. to restrict<br/>access to a set of known office/VPN IP ranges. Null (the default) leaves<br/>the distribution without a Web ACL, unchanged from prior behavior. | `string` | `null` | no |
 | <a name="input_zone_id"></a> [zone\_id](#input\_zone\_id) | Route53 zone id where the parent domain of var.domain\_name is hosted. If var.domain\_name is repo.foo.com, then the value should be zone\_id of foo.com. | `string` | n/a | yes |
 
 ## Outputs

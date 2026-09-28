@@ -36,6 +36,8 @@ resource "aws_cloudfront_distribution" "repo" {
     minimum_protocol_version = "TLSv1.2_2021"
   }
 
+  web_acl_id = var.web_acl_arn
+
   restrictions {
     geo_restriction {
       restriction_type = "blacklist"

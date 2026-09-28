@@ -71,3 +71,33 @@ def test_module(
             assert response.status_code == 200
             LOG.info("Response from HTTP server:\n%s", response.text)
             assert "Stay tuned!" in response.text
+
+
+def test_module_web_acl(jumphost, keep_after, test_zone_name, test_role_arn):
+    """A Web ACL that blocks all traffic makes the distribution unreachable,
+    proving web_acl_arn actually gets associated with it."""
+    terraform_dir = "test_data/test_module"
+    jumphost_role_arn = jumphost["jumphost_role_arn"]["value"]
+    jumphost_role_name = jumphost["jumphost_role_name"]["value"]
+
+    with open(osp.join(terraform_dir, "terraform.tfvars"), "w") as fp:
+        fp.write(dedent(f"""
+                test_zone          = "{test_zone_name}"
+                ubuntu_codename    = "{UBUNTU_CODENAME}"
+                jumphost_role_arn  = "{jumphost_role_arn}"
+                jumphost_role_name = "{jumphost_role_name}"
+                create_web_acl     = true
+                """))
+        if test_role_arn:
+            fp.write(dedent(f"""
+                    role_arn        = "{test_role_arn}"
+                    """))
+
+    with terraform_apply(
+        terraform_dir,
+        destroy_after=not keep_after,
+    ) as tf_output:
+        assert tf_output["release_bucket"]["value"]
+        response = requests.get(f"https://debian-repo-test.{test_zone_name}")
+        assert response.status_code == 403
+        LOG.info("Response from HTTP server:\n%s", response.text)
