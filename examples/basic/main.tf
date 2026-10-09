@@ -17,12 +17,13 @@ module "debian_repo" {
     aws.ue1 = aws.aws-us-east-1
   }
   source  = "registry.infrahouse.com/infrahouse/debian-repo/aws"
-  version = "3.2.0"
+  version = "4.0.0"
 
   bucket_name         = "my-company-packages-noble"
   environment         = "production"
   repository_codename = "noble"
   domain_name         = "packages.example.com"
+  replication_region  = "us-east-1"
   gpg_public_keys = [
     file("${path.module}/files/DEB-GPG-KEY-example")
   ]
